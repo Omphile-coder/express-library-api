@@ -9,13 +9,13 @@ let authors = [
     
 ]
 
-
+//Get all Authors
 router.get("/", (req: Request, res: Response) => { 
     res.status(200).json(authors)
 })
 
-// http://localhost:3000/:id/2
-router.get("/:id", [param("id").isInt().withMessage("ID must be an integer")], (req: Request, res: Response) => { 
+// Get Author by ID
+router.get("/:id", [param("id").isInt().withMessage("ID must be an integer")], (req: Request, res: Response) => {
     const errors = validationResult(req);
     console.log(errors, "errors from express-validator middleware")
 
@@ -32,6 +32,28 @@ router.get("/:id", [param("id").isInt().withMessage("ID must be an integer")], (
     
     res.status(200).json(author);
 
+});
+
+// Adding a Author
+router.post("/", [
+    body("name").notEmpty().withMessage("Name is required"),
+    body("email").isEmail().withMessage("Must be a valid email address"),
     
-})
+], (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+
+    console.log(req.body, 'request');
+
+    const { name, email } = req.body;
+
+    const newAuthor = { id: authors.length + 1, name, email };
+
+    authors.push(newAuthor);
+
+    res.status(201).json(newAuthor);
+        
+});
 export default router;
