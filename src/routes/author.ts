@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { body, param, validationResult } from 'express-validator';
+import { createUser, getAllAuthors, getAuthorByID } from '../controllers/authors';
 
 const router = Router();
 
@@ -10,9 +11,7 @@ let authors = [
 ]
 
 //Get all Authors
-router.get("/", (req: Request, res: Response) => { 
-    res.status(200).json(authors)
-})
+router.get("/", getAllAuthors);
 
 // Get Author by ID
 router.get("/:id", [param("id").isInt().withMessage("ID must be an integer")], (req: Request, res: Response) => {
@@ -23,14 +22,7 @@ router.get("/:id", [param("id").isInt().withMessage("ID must be an integer")], (
         return res.status(400).json({ errors: errors.array() });
     }
     
-    const { id } = req.params
-    const author = authors.find((author) => author.id === parseInt(String(id), 10));
-    
-    if (!author) {
-        return res.status(404).send("User not Found");
-    }
-    
-    res.status(200).json(author);
+    getAuthorByID(req, res)
 
 });
 
@@ -47,13 +39,7 @@ router.post("/", [
 
     console.log(req.body, 'request');
 
-    const { name, email } = req.body;
-
-    const newAuthor = { id: authors.length + 1, name, email };
-
-    authors.push(newAuthor);
-
-    res.status(201).json(newAuthor);
+    createUser(req, res);
         
 });
 export default router;
