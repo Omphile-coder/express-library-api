@@ -7,6 +7,7 @@ import {
     getAuthorByID,
     updateAuthor
 } from '../controllers/authors';
+import { getBooksByAuthorId } from '../controllers/books';
 
 const router = Router();
 
@@ -124,21 +125,21 @@ router.delete(
     }
 );
 
-// Get Books by Author (Sprint 4)
-// router.get(
-//     "/:id/books",
-//     [param("id").isInt().withMessage("ID must be an integer")],
-//     (req: Request, res: Response) => {
-//         const errors = validationResult(req);
+// Get Books by Author
+router.get(
+    "/:id/books",
+    [param("id").isInt().withMessage("ID must be an integer")],
+    (req: Request, res: Response) => {
+        const errors = validationResult(req);
 
-//         if (!errors.isEmpty()) {
-//             return res.status(400).json({
-//                 errors: errors.array()
-//             });
-//         }
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array()
+            });
+        }
 
-//         getBooksByAuthorId(req, res);
-//     }
-// );
+        getBooksByAuthorId(req, res);
+    }
+);
 
 export default router;

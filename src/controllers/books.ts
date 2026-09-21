@@ -59,14 +59,14 @@ export const createBook = (req: Request, res: Response) => {
         })
     }
 
-    // // Detect and prevent duplicate books
-    // const duplicateBook = books.find(b => b.title.toLowerCase() === title.toLowerCase());
-    // if (duplicateBook) {
-    //     return res.status(409).json({
-    //         error: "Conflict",
-    //         message: "A book with this title already exists."
-    //     });
-// }
+    // Detect and prevent duplicate books
+    const duplicateBook = books.find(b => b.title.toLowerCase() === title.toLowerCase());
+    if (duplicateBook) {
+        return res.status(409).json({
+            error: "Conflict",
+            message: "A book with this title already exists."
+        });
+}
 
     const newBook = { id: books.length ? books[books.length - 1].id + 1 : 1, title, year, authorId };
     books.push(newBook);
@@ -109,14 +109,14 @@ export const deleteBook = (req: Request, res: Response) => {
     res.status(204).send();
 };
 
-// // Sprint 4: List Books By an Author
-// export const getBooksByAuthorId = (req: Request, res: Response) => {
-//     const { id } = req.params;
-//     const authorId = parseInt(id, 10);
+//  List Books By an Author
+export const getBooksByAuthorId = (req: Request, res: Response) => {
+    const { id } = req.params;
+    const authorId = parseInt(String(id), 10);
     
-//     const authorExists = authors.some(a => a.id === authorId);
-//     if (!authorExists) return res.status(404).json({ error: "Not Found", message: "Author not found" });
+    const authorExists = authors.some(a => a.id === authorId);
+    if (!authorExists) return res.status(404).json({ error: "Not Found", message: "Author not found" });
 
-//     const authorBooks = books.filter(b => b.authorId === authorId);
-//     res.status(200).json(authorBooks);
-// };
+    const authorBooks = books.filter(b => b.authorId === authorId);
+    res.status(200).json(authorBooks);
+};
